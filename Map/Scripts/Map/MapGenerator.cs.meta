@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: aad8f6c75e403a746a91237bb1eb6c43
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - map: {fileID: 2339415784028921204, guid: 319c83ef99b17de4c99de7e2459782d2, type: 3}
+  - line: {fileID: 2340186741657061096, guid: ab8fbe952c276174991dacc04aa99320, type: 3}
+  - roomLine: {instanceID: 0}
+  - tileMap: {instanceID: 0}
+  - roomTile: {instanceID: 0}
+  - wallTile: {instanceID: 0}
+  - outTile: {instanceID: 0}
+  - lineRenderer: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
