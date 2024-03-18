@@ -18,7 +18,7 @@ public class MapGenerator : MonoBehaviour
 
     public LineRenderer lineRenderer;
     //에디터에서 맵 다시그릴때 렌더러 전부 지우고 다시 그리게하기 위한 리스트
-    private List<LineRenderer> lineRenderers = new List<LineRenderer>(); 
+    private List<LineRenderer> lineRenderers = new List<LineRenderer>();
 
 
     void Start()
@@ -29,6 +29,7 @@ public class MapGenerator : MonoBehaviour
         DrawMap(0, 0);
         Divide(root, 0);
         GenerateRoom(root, 0);
+        GenerateLoad(root, 0);
     }
 
 
@@ -101,10 +102,10 @@ public class MapGenerator : MonoBehaviour
     {
         RectInt rect;
 
-        if (n == maximumDepth) // 나뉘어진 구역이면 방생성
-        {
-            rect = tree.nodeRect; 
-            int width = Random.Range(rect.width / 2 ,rect.width - 1);
+        if (n == maximumDepth) // 나뉘어진 구역이면 방생성 
+        {//이거 안쓰고 만들어진 방을 가져오는 식으로 할것
+            rect = tree.nodeRect;
+            int width = Random.Range(rect.width / 2, rect.width - 1);
             int height = Random.Range(1, rect.width - width);
             int x = rect.x + Random.Range(1, rect.width - width);
             int y = rect.y + Random.Range(1, rect.height - height);
@@ -128,6 +129,32 @@ public class MapGenerator : MonoBehaviour
         lineRenderer.SetPosition(1, new Vector2(rect.x + rect.width, rect.y) - mapSize / 2); //우측 하단
         lineRenderer.SetPosition(2, new Vector2(rect.x + rect.width, rect.y + rect.height) - mapSize / 2);//우측 상단
         lineRenderer.SetPosition(3, new Vector2(rect.x, rect.y + rect.height) - mapSize / 2); //좌측 상단
+
+        lineRenderers.Add(lineRenderer);
+    }
+
+    private void GenerateLoad(Node tree, int n)
+    {
+        if (n == maximumDepth) // 방금만들어진 방이면 이을 방이 없음.
+        {
+            return; // 바로 리턴
+        }
+        Vector2Int leftNodeCenter = tree.leftNode.center;
+        Vector2Int rightNodeCenter = tree.rightNode.center;
+
+        //leftnode에 세로기준을 맞춰 가로선으로 연결
+        DrawLine(new Vector2(leftNodeCenter.x, leftNodeCenter.y), new Vector2(rightNodeCenter.x, leftNodeCenter.y));
+        //rightnode에 가로기준에 맞춰 세로선으로 연결
+        DrawLine(new Vector2(rightNodeCenter.x, leftNodeCenter.y), new Vector2(rightNodeCenter.x, rightNodeCenter.y));
+        GenerateLoad(tree.leftNode, n + 1); //자식 노드들도 탐색
+        GenerateLoad(tree.rightNode, n + 1);
+    }
+    private void DrawRoad(Vector2 from, Vector2 to)
+    {
+        lineRenderer = Instantiate(line).GetComponent<LineRenderer>();
+        lineRenderer.SetPosition(0, from - mapSize / 2);
+        lineRenderer.SetPosition(1, to - mapSize / 2);
+
 
         lineRenderers.Add(lineRenderer);
     }
