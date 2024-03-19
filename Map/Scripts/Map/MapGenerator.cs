@@ -8,7 +8,7 @@ public class MapGenerator : MonoBehaviour
 
     public GameObject map; // 첫 맵 사이즈 체크용
     public GameObject line; // 나눠진 공간 체크용
-    public GameObject roomLine; //방 사이즈 체크용
+    public GameObject road; //방 사이즈 체크용
     public Vector2Int mapSize; //만들고 싶은 맵의 크기
     public float minimumDevidedRate; // 공간이 나눠지는 최소 비율
     public float maximumDevidedRate; // 최대 비율
@@ -110,7 +110,6 @@ public class MapGenerator : MonoBehaviour
             int x = rect.x + Random.Range(1, rect.width - width);
             int y = rect.y + Random.Range(1, rect.height - height);
             rect = new RectInt(x, y, width, height);
-            DrawRectangle(rect);
         }
         else
         {
@@ -120,17 +119,6 @@ public class MapGenerator : MonoBehaviour
         }
         return rect;
 
-    }
-
-    private void DrawRectangle(RectInt rect)
-    {
-        LineRenderer lineRenderer = Instantiate(roomLine).GetComponent<LineRenderer>();
-        lineRenderer.SetPosition(0, new Vector2(rect.x, rect.y) - mapSize / 2); //좌측 하단
-        lineRenderer.SetPosition(1, new Vector2(rect.x + rect.width, rect.y) - mapSize / 2); //우측 하단
-        lineRenderer.SetPosition(2, new Vector2(rect.x + rect.width, rect.y + rect.height) - mapSize / 2);//우측 상단
-        lineRenderer.SetPosition(3, new Vector2(rect.x, rect.y + rect.height) - mapSize / 2); //좌측 상단
-
-        lineRenderers.Add(lineRenderer);
     }
 
     private void GenerateLoad(Node tree, int n)
@@ -143,15 +131,15 @@ public class MapGenerator : MonoBehaviour
         Vector2Int rightNodeCenter = tree.rightNode.center;
 
         //leftnode에 세로기준을 맞춰 가로선으로 연결
-        DrawLine(new Vector2(leftNodeCenter.x, leftNodeCenter.y), new Vector2(rightNodeCenter.x, leftNodeCenter.y));
+        DrawRoad(new Vector2(leftNodeCenter.x, leftNodeCenter.y), new Vector2(rightNodeCenter.x, leftNodeCenter.y));
         //rightnode에 가로기준에 맞춰 세로선으로 연결
-        DrawLine(new Vector2(rightNodeCenter.x, leftNodeCenter.y), new Vector2(rightNodeCenter.x, rightNodeCenter.y));
+        DrawRoad(new Vector2(rightNodeCenter.x, leftNodeCenter.y), new Vector2(rightNodeCenter.x, rightNodeCenter.y));
         GenerateLoad(tree.leftNode, n + 1); //자식 노드들도 탐색
         GenerateLoad(tree.rightNode, n + 1);
     }
     private void DrawRoad(Vector2 from, Vector2 to)
     {
-        lineRenderer = Instantiate(line).GetComponent<LineRenderer>();
+        lineRenderer = Instantiate(road).GetComponent<LineRenderer>();
         lineRenderer.SetPosition(0, from - mapSize / 2);
         lineRenderer.SetPosition(1, to - mapSize / 2);
 

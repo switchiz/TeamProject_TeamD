@@ -39,11 +39,11 @@ public class MapGen_Editor : Editor
 
         selected.map = (GameObject)EditorGUILayout.ObjectField("첫 맵 사이즈 체크용(rectangle)",
                                                                selected.map, typeof(GameObject), true);
-        selected.line = (GameObject)EditorGUILayout.ObjectField("나눠진 공간 체크용(Line)",
+        selected.line = (GameObject)EditorGUILayout.ObjectField("나눠진 공간 체크용(line)",
                                                                selected.line, typeof(GameObject), true);
 
-        selected.roomLine = (GameObject)EditorGUILayout.ObjectField("방 사이즈 체크용(room)",
-                                                               selected.roomLine, typeof(GameObject), true);
+        selected.road = (GameObject)EditorGUILayout.ObjectField("이어진 길체크용(road)",
+                                                               selected.road, typeof(GameObject), true);
 
         EditorGUILayout.Space();
         GUI.color = Color.yellow;
@@ -55,13 +55,6 @@ public class MapGen_Editor : Editor
         selected.minimumDevidedRate = EditorGUILayout.FloatField("공간이   최소 비율", selected.minimumDevidedRate);
         selected.maximumDevidedRate = EditorGUILayout.FloatField("나눠지는   최대 비율", selected.maximumDevidedRate);
         selected.maximumDepth = EditorGUILayout.IntField("트리의 높이(2^n)", selected.maximumDepth);
-
-        EditorGUILayout.Space();
-        GUI.color = Color.yellow;
-        EditorGUILayout.LabelField("타일 관련", EditorStyles.boldLabel);
-        EditorGUILayout.Space();
-
-        GUI.color = Color.white;
 
 
         // 다시 그리기

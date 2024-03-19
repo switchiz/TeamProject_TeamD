@@ -291,15 +291,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   map: {fileID: 2339415784028921204, guid: 319c83ef99b17de4c99de7e2459782d2, type: 3}
   line: {fileID: 2340186741657061096, guid: ab8fbe952c276174991dacc04aa99320, type: 3}
-  roomLine: {fileID: 6344224834110532359, guid: 23e0e8c28ad8cae4e94ea4874cc55ed6, type: 3}
+  road: {fileID: 6344224834110532359, guid: 23e0e8c28ad8cae4e94ea4874cc55ed6, type: 3}
   mapSize: {x: 64, y: 40}
   minimumDevidedRate: 0.4
   maximumDevidedRate: 0.6
-  maximumDepth: 4
-  tileMap: {fileID: 0}
-  roomTile: {fileID: 0}
-  wallTile: {fileID: 0}
-  outTile: {fileID: 0}
+  maximumDepth: 2
   lineRenderer: {fileID: 0}
 --- !u!4 &537682128
 Transform:
