@@ -1,6 +1,8 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public class MapGenerator : MonoBehaviour
@@ -20,9 +22,51 @@ public class MapGenerator : MonoBehaviour
     //에디터에서 맵 다시그릴때 렌더러 전부 지우고 다시 그리게하기 위한 리스트
     private List<LineRenderer> lineRenderers = new List<LineRenderer>();
 
+    /// <summary>
+    /// 씬 이름(+숫자)
+    /// </summary>
+    const string BaseSceneName = "Map";
+    /// <summary>
+    /// 씬 저장용 배열
+    /// </summary>
+    string[] sceneNames;
+
+    int mapCount;
+    /// <summary>
+    /// 씬의 로딩상태를 나타내기 위한 enum
+    /// </summary>
+    enum SceneLoadState : byte
+    {
+        Unload = 0, // 로딩이 안된 상태
+        Loaded // 로딩이 된 상태
+
+    }
+    /// <summary>
+    /// 씬들의 로딩 상태
+    /// </summary>
+    SceneLoadState[] sceneLoadState;
+
+    [Tooltip("씬 로드,언로드상태 리스트")]
+    List<int> loadedScene = new();
+    List<int> unloadedScene = new();
+
+    List<int> randomint = new();
 
     void Start()
     {
+        mapCount = (int)Mathf.Pow(maximumDepth, 2);
+
+        sceneNames = new string[mapCount];
+        sceneLoadState = new SceneLoadState[mapCount];
+        for (int i = 0; i < mapCount; i++)
+        {
+            int index = i;                      //일단은 중복 허용이지만 맵개수 늘리면 중복안되게 리스트추가해서 막아야함.
+            int random = Random.Range(1, 4); // 현재 만들어진 맵중에서 랜덤으로 뽑고
+
+            sceneNames[index] = $"{BaseSceneName}{random}";      //<- 맞는지확인필요
+            sceneLoadState[index] = SceneLoadState.Unload;
+            
+        }
 
 
         Node root = new Node(new RectInt(0, 0, mapSize.x, mapSize.y)); //전체 맵 크기의 루트노드를 만듬
@@ -35,6 +79,7 @@ public class MapGenerator : MonoBehaviour
 
 
 
+    [Tooltip("전체맵 그리기")]
     private void DrawMap(int x, int y) //x y는 화면의 중앙위치를 뜻한다.
     {
         // -mapsize/2를 하는 이유는 화면의 중앙에서 화면의 크기의 반을 빼줘야 좌측 하단좌표를 구할 수 있기 때문이다.
@@ -69,6 +114,7 @@ public class MapGenerator : MonoBehaviour
             //위 두개의 노드를 나눠준 선을 그리는 함수
             DrawLine(new Vector2(tree.nodeRect.x + split, tree.nodeRect.y),
                      new Vector2(tree.nodeRect.x + split, tree.nodeRect.y + tree.nodeRect.height));
+            
         }
 
         else //세로가 더 길다면,
@@ -78,16 +124,35 @@ public class MapGenerator : MonoBehaviour
                                                  tree.nodeRect.width, tree.nodeRect.height - split));
             DrawLine(new Vector2(tree.nodeRect.x, tree.nodeRect.y + split),
                      new Vector2(tree.nodeRect.x + tree.nodeRect.width, tree.nodeRect.y + split));
+            
         }
+        MapLoad(); //<--위의 마지막에도달시 그냥리턴때문에 한개가 나오지않는 중, 고쳐야함.
+
+
         tree.leftNode.parNode = tree; // 자식노드들의 부모노드를 나누기전 노드로 설정한다.
         tree.rightNode.parNode = tree;
 
         Divide(tree.leftNode, n + 1); //왼쪽,오른쪽 자식 노드들도 나눠주기
         Divide(tree.rightNode, n + 1); //n+1해서 최대 높이에 도달시 종료
-
-
     }
 
+    void MapLoad()
+    {
+        int randomMap = Random.Range(0, mapCount);
+        if (sceneLoadState[randomMap] == SceneLoadState.Unload) //<--중복시 다시 고르게 해야함
+        {
+            sceneLoadState[randomMap] = SceneLoadState.Loaded;
+            AsyncOperation async = SceneManager.LoadSceneAsync(sceneNames[randomMap], LoadSceneMode.Additive);
+
+        }
+    }
+
+
+    /// <summary>
+    /// 나뉘는 방 그리기
+    /// </summary>
+    /// <param name="from"이 위치에서</param>
+    /// <param name="to">이 위치로</param>
     private void DrawLine(Vector2 from, Vector2 to)
     {
         lineRenderer = Instantiate(line).GetComponent<LineRenderer>();
