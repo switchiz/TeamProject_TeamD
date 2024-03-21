@@ -85,8 +85,8 @@ public class EnemyBase_ : MonoBehaviour
             if (checkLR != value) // 값이 변경 되었다면
             {
                 checkLR = value;
-                // 방향 전환 ( flip 으로 수정 필요하며, 스프라이트의 기본이 좌측이냐 우측이냐에 따라 바꿔주어야함.)
-                gameObject.transform.localScale = new Vector3(1.0f * checkLR, 1.0f, 1.0f);
+                // 스프라이트 방향 전환 
+                if (checkLR == 1) sprite.flipX = false; else { sprite.flipX = true; }
             }
 
         }

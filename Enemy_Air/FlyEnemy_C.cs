@@ -9,6 +9,11 @@ public class FlyEnemy_C : EnemyBase_
     private float height = 0.8f; // 왕복 높이
     private Vector3 startPos; // 초기 위치
 
+    /// <summary>
+    /// 쏘는 탄환 ( 임시로 public , 추후 팩토리로 찾기 )
+    /// </summary>
+    public GameObject obj;
+
     Vector3 playerPos;
 
     protected override void Start()
@@ -44,7 +49,24 @@ public class FlyEnemy_C : EnemyBase_
         transform.position = new Vector3(newX, currentPos.y, 0);
     }
 
+    protected override void checkNow()
+    {
+        base.checkNow();
 
+        StartCoroutine(shootBullet());
+    }
+
+    /// <summary>
+    /// 일정 주기마다 탄환을 발사하는 메서드 / 적을 발견할때만 사용한다.
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator shootBullet()
+    {
+        
+        yield return new WaitForSeconds(2.0f);
+        Instantiate(obj,this.transform.position,Quaternion.identity);
+        StartCoroutine(shootBullet());
+    }
 
 
 
